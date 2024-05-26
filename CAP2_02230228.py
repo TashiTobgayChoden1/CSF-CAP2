@@ -1,3 +1,10 @@
+#name: Tashi Tobgay Choden,
+ #section: 1ICE
+ #StudentIDNumber: 02230228
+ #REFERENCES:
+#https://www.codecademy.com/resources/blog/what-is-inheritance/
+#https://www.youtube.com/watch?v=irOo4pO-Ros
+#https://www.youtube.com/watch?v=ZQkA44lDtIk
 import random  # Import the random module for generating random numbers
 
 class BankAccount:
