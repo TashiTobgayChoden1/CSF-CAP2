@@ -5,14 +5,11 @@
 #https://www.codecademy.com/resources/blog/what-is-inheritance/
 #https://www.youtube.com/watch?v=irOo4pO-Ros
 #https://www.youtube.com/watch?v=ZQkA44lDtIk
-
-# Import necessary modules
-import os
+import os # Import necessary modules
 import random
 import string
 
-# BankAccount class represents a bank account
-class BankAccount:
+class BankAccount:# BankAccount class represents a bank account
     def __init__(self, account_type, balance=0):
         self.account_number = self.generate_account_number()  # Generate a random account number
         self.password = self.generate_password()  # Generate a random password
