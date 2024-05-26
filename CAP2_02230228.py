@@ -1,87 +1,79 @@
-import os  # Import necessary modules
+import os
 import random
 import string
 
-class BankAccount:# BankAccount class represents a bank account
-    def __init__(self, account_type, balance=0):
-        self.account_number = self.generate_account_number()  # Generate a random account number
-        self.password = self.generate_password()  # Generate a random password
-        self.account_type = account_type  # Account type (Personal or Business)
-        self.balance = balance  # Initial balance
+class BankAccount:
+    def __init__(self, account_type, initial_balance=0):
+        self.account_num = self.generate_account_num()
+        self.access_code = self.generate_access_code()
+        self.account_type = account_type
+        self.balance = initial_balance
 
-    def generate_account_number(self):
-        # Generate a 10-digit random account number
-        account_number = ''.join(random.choices(string.digits, k=10))
-        return account_number
+    def generate_account_num(self):
+        account_num = ''.join(random.sample(string.digits, 10))
+        return account_num
 
-    def generate_password(self):
-        # Generate an 8-character random digits
-        password = ''.join(random.choices(string.digits, k=8))
-        return password
+    def generate_access_code(self):
+        access_code = ''.join(random.choices(string.digits, k=8))
+        return access_code
 
-    def deposit(self, amount):
-        self.balance += amount  # Add the amount to the account balance
-        print(f"Deposit successful. current acc balance: {self.balance}")
+    def deposit_funds(self, amount):
+        self.balance += amount
+        print(f"Deposit successful. Current balance: {self.balance}")
 
-    def withdraw(self, amount):
+    def withdraw_funds(self, amount):
         if self.balance >= amount:
-            self.balance -= amount  # deduct the amount from the account balance
-            print(f"Withdrawal successful. current acc balance: {self.balance}")
+            self.balance -= amount
+            print(f"Withdrawal successful. Current balance: {self.balance}")
         else:
             print("Insufficient funds.")
 
-    def transfer(self, recipient_account, amount):
-        if self.balance >= amount:
-            self.balance -= amount  # deduct the amount from the sender's account
-            recipient_account.balance += amount  # Add the amount to the recipient's account
-            print(f"Transfer of {amount} successful. Your new balance: {self.balance}")
+    def transfer_funds(self, recipient, transfer_amount):
+        if self.balance >= transfer_amount:
+            self.balance -= transfer_amount
+            recipient.balance += transfer_amount
+            print(f"Transfer of {transfer_amount} successful. Your new balance: {self.balance}")
         else:
             print("Insufficient funds.")
 
-    def __str__(self):
-        # Return a string representation of the account
-        return f"Account Number: {self.account_number}, Balance: {self.balance}, Account Type: {self.account_type}"
+    def __repr__(self):
+        return f"Account Number: {self.account_num}, Balance: {self.balance}, Account Type: {self.account_type}"
 
-# PersonalAccount class inherits from BankAccount
 class PersonalAccount(BankAccount):
-    def __init__(self, balance=0):
-        super().__init__("Personal", balance)  # Call the parent class constructor
+    def __init__(self, initial_balance=0):
+        super().__init__("Personal", initial_balance)
 
-# BusinessAccount class inherits from BankAccount
 class BusinessAccount(BankAccount):
-    def __init__(self, balance=0):
-        super().__init__("Business", balance)  # Call the parent class constructor
+    def __init__(self, initial_balance=0):
+        super().__init__("Business", initial_balance)
 
-def save_account(account):
-    # Save account details to a file
+def save_account_details(account):
     with open("accounts.txt", "a") as file:
-        file.write(f"{account.account_number},{account.password},{account.account_type},{account.balance}\n")
+        file.write(f"{account.account_num},{account.access_code},{account.account_type},{account.balance}\n")
 
-def load_accounts():
+def load_account_details():
     accounts = []
     if os.path.exists("accounts.txt"):
         with open("accounts.txt", "r") as file:
             for line in file:
-                # Read account details from the file and create account objects
-                account_number, password, account_type, balance = line.strip().split(",")
+                account_num, access_code, account_type, balance = line.strip().split(",")
                 if account_type == "Personal":
                     account = PersonalAccount(int(balance))
                 else:
                     account = BusinessAccount(int(balance))
-                account.account_number = account_number
-                account.password = password
+                account.account_num = account_num
+                account.access_code = access_code
                 accounts.append(account)
     return accounts
 
-def authenticate_account(accounts, account_number, password):
-    # Authenticate an account by checking the account number and password
+def authenticate(accounts, account_num, access_code):
     for account in accounts:
-        if account.account_number == account_number and account.password == password:
+        if account.account_num == account_num and account.access_code == access_code:
             return account
     return None
 
 def main():
-    accounts = load_accounts()  # Load existing accounts from the file
+    accounts = load_account_details()
 
     while True:
         print("\nWelcome to the Bank!")
@@ -91,29 +83,27 @@ def main():
         choice = input("Enter your choice (1/2/3): ")
 
         if choice == "1":
-            # Create a new account
             print("\nCreate a new account")
             print("1. Personal Account")
             print("2. Business Account")
-            account_type = input("Enter account type (1/2): ")
+            account_type_choice = input("Enter account type (1/2): ")
 
-            if account_type == "1":
+            if account_type_choice == "1":
                 account = PersonalAccount()
-            elif account_type == "2":
+            elif account_type_choice == "2":
                 account = BusinessAccount()
             else:
                 print("Invalid choice.")
                 continue
 
-            print(f"Account created successfully!\nAccount Number: {account.account_number}\nPassword: {account.password}")
-            save_account(account)  # Save the new account to the file
+            print(f"Account created successfully!\nAccount Number: {account.account_num}\nAccess Code: {account.access_code}")
+            save_account_details(account)
 
         elif choice == "2":
-            # Log in to an existing account
-            account_number = input("Enter your account number: ")
-            password = input("Enter your password: ")
+            account_num = input("Enter your account number: ")
+            access_code = input("Enter your access code: ")
 
-            account = authenticate_account(accounts, account_number, password)
+            account = authenticate(accounts, account_num, access_code)
             if account:
                 print(f"\nWelcome, {account.account_type} Account Holder!")
                 while True:
@@ -129,21 +119,21 @@ def main():
                     if operation == "1":
                         print(f"Your current balance: {account.balance}")
                     elif operation == "2":
-                        amount = int(input("Enter the amount to deposit: "))
-                        account.deposit(amount)
-                        save_account(account)  # Save the updated account to the file
+                        deposit_amount = int(input("Enter the amount to deposit: "))
+                        account.deposit_funds(deposit_amount)
+                        save_account_details(account)
                     elif operation == "3":
-                        amount = int(input("Enter the amount to withdraw: "))
-                        account.withdraw(amount)
-                        save_account(account)  # Save the updated account to the file
+                        withdrawal_amount = int(input("Enter the amount to withdraw: "))
+                        account.withdraw_funds(withdrawal_amount)
+                        save_account_details(account)
                     elif operation == "4":
-                        recipient_account_number = input("Enter the recipient account number: ")
-                        recipient_account = authenticate_account(accounts, recipient_account_number, "")
-                        if recipient_account:
-                            amount = int(input("Enter the amount to transfer: "))
-                            account.transfer(recipient_account, amount)
-                            save_account(account)  # Save the updated sender's account
-                            save_account(recipient_account)  # Save the updated recipient's account
+                        recipient_account_num = input("Enter the recipient account number: ")
+                        recipient = authenticate(accounts, recipient_account_num, "")
+                        if recipient:
+                            transfer_amount = int(input("Enter the amount to transfer: "))
+                            account.transfer_funds(recipient, transfer_amount)
+                            save_account_details(account)
+                            save_account_details(recipient)
                         else:
                             print("Invalid recipient account number.")
                     elif operation == "5":
@@ -151,7 +141,7 @@ def main():
                         if confirmation.lower() == "y":
                             accounts.remove(account)
                             print("Account deleted successfully.")
-                            save_accounts(accounts)  # Save the updated list of accounts
+                            save_accounts(accounts)
                             break
                     elif operation == "6":
                         print("Logging out...")
@@ -159,10 +149,10 @@ def main():
                     else:
                         print("Invalid choice.")
             else:
-                print("Invalid account number or password.")
+                print("Invalid account number or access code.")
 
         elif choice == "3":
-            print("thank you for choosing this bank!")
+            print("Thank you for choosing our bank!")
             break
 
         else:
