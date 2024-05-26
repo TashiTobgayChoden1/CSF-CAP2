@@ -8,11 +8,13 @@ class BankAccount:
         self.account_type = account_type  # Account type (Personal or Business)
         self.balance = initial_balance  # Initial account balance
 
-    def generate_account_num(self): # Generate a 10-digit random account number
+    def generate_account_num(self):
+        # Generate a 10-digit random account number
         account_num = ''.join(str(random.randint(0, 9)) for _ in range(10))
         return account_num
 
-    def generate_access_code(self): # Generate an 8-digit random access code
+    def generate_access_code(self):
+        # Generate an 8-digit random access code
         access_code = ''.join(str(random.randint(0, 9)) for _ in range(8))
         return access_code
 
@@ -35,20 +37,22 @@ class BankAccount:
         else:
             print("Insufficient funds.")
 
-    def __repr__(self):# Return a string representation of the account
+    def __repr__(self):
+        # Return a string representation of the account
         return f"Account Number: {self.account_num}, Balance: {self.balance}, Account Type: {self.account_type}"
 
 # PersonalAccount class inherits from BankAccount
 class PersonalAccount(BankAccount):
-    def __init__(self, initial_balance=0):# Call the parent class constructor with "Personal" as the account type
-        BankAccount.__init__(self, "Personal", initial_balance)
+    def __init__(self, initial_balance=0):
+        super().__init__("Personal", initial_balance)  # Call the parent class constructor
 
 # BusinessAccount class inherits from BankAccount
 class BusinessAccount(BankAccount):
-    def __init__(self, initial_balance=0):# Call the parent class constructor with "Business" as the account type
-        BankAccount.__init__(self, "Business", initial_balance)
+    def __init__(self, initial_balance=0):
+        super().__init__("Business", initial_balance)  # Call the parent class constructor
 
-def save_account_details(account): # Save account details to a file
+def save_account_details(account):
+    # Save account details to a file
     with open("accounts.txt", "a") as file:
         file.write(f"{account.account_num},{account.access_code},{account.account_type},{account.balance}\n")
 
@@ -56,7 +60,8 @@ def load_account_details():
     accounts = []
     if os.path.exists("accounts.txt"):
         with open("accounts.txt", "r") as file:
-            for line in file: # Read account details from the file and create account objects
+            for line in file:
+                # Read account details from the file and create account objects
                 account_num, access_code, account_type, balance = line.strip().split(",")
                 if account_type == "Personal":
                     account = PersonalAccount(int(balance))
@@ -67,7 +72,8 @@ def load_account_details():
                 accounts.append(account)
     return accounts
 
-def authenticate(accounts, account_num, access_code): # Authenticate an account by checking the account number and access code
+def authenticate(accounts, account_num, access_code):
+    # Authenticate an account by checking the account number and access code
     for account in accounts:
         if account.account_num == account_num and account.access_code == access_code:
             return account
@@ -83,7 +89,8 @@ def main():
         print("3. Exit")
         choice = input("Enter your choice (1/2/3): ")
 
-        if choice == "1": # Create a new account
+        if choice == "1":
+            # Create a new account
             print("\nCreate a new account")
             print("1. Personal Account")
             print("2. Business Account")
@@ -100,7 +107,8 @@ def main():
             print(f"Account created successfully!\nAccount Number: {account.account_num}\nAccess Code: {account.access_code}")
             save_account_details(account)  # Save the new account to the file
 
-        elif choice == "2": # Log in to an existing account
+        elif choice == "2":
+            # Log in to an existing account
             account_num = input("Enter your account number: ")
             access_code = input("Enter your access code: ")
 
